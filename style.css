@@ -39,10 +39,10 @@ button:hover {
   cursor: pointer;
 }
 
-.mode {
+.modes button {
   border-radius: 2rem;
   padding: 2rem;
-  background-color: firebrick;
+  background-color: indianred;
   font-size: 3rem;
 }
 
@@ -54,6 +54,7 @@ button:hover {
   font-size: 25rem;
   position: relative;
   left: 28%;
+  display: inline-block;
 }
 
 .controls {
@@ -64,3 +65,49 @@ button:hover {
   font-size: 10rem;
   margin: 0 5rem;
 }
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  background: wheat;
+  width: 50%;
+  height: 70%;
+  left: 25%;
+  top: 25%;
+  border-radius: 5rem;
+}
+
+.modal button {
+  border-radius: 2rem;
+  padding: 2rem;
+  background-color: indianred;
+  font-size: 3rem;
+}
+
+.modal-content {
+  margin: 8rem;
+  width: 40%;
+  height: 50%;
+  margin: 8rem auto;
+}
+
+.setting-inputs {
+  margin-bottom: 3rem;
+}
+
+.setting-inputs * {
+  display: block;
+  font-size: 3rem;
+}
+
+.setting-inputs > *:not(:last-child) {
+  margin-bottom: 2rem;
+}
+
+.setting-buttons {
+  text-align: center;
+}
+
+
+

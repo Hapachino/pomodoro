@@ -5,14 +5,38 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div id="modal-settings" class="modal">
+    <div class="modal-content">
+      <div class="setting-inputs">
+        <div class="setting-input">
+          <label for='pomodoroValue'>Pomodoro</label>
+          <input type='number' id='pomodoroValue'>
+        </div>
+        <div class="setting-input">
+          <label for='shortBreakValue'>Short Break</label>
+          <input type='number' id='shortBreakValue'>
+        </div>
+        <div class="setting-input">
+          <label for='longBreakValue'>Long Break</label>
+          <input type='number' id='longBreakValue'>
+        </div>
+      </div>
+      <div class="setting-buttons">
+        <button id="save">Save</button>
+        <button id="cancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+
   <div class="interface">
     <div class="modes">
-      <button class="mode restart" id="pomodoro">Pomodoro</button>
-      <button class="mode" id="short-break">Short break</button>
-      <button class="mode" id="long-break">Long break</button>
+      <button data-initial-time="1500" data-time="1500" class="mode restart active" id="pomodoro">Pomodoro</button>
+      <button data-initial-time="300" data-time="300" class="mode" id="short-break">Short break</button>
+      <button data-initial-time="900" data-time="900" class="mode" id="long-break">Long break</button>
+      <button id="settings">Settings</button>
     </div>
-    
-    <div class="display">25:00</div>
+
+    <div class="display"></div>
 
     <div class="controls">
       <button class="control" id="play">&#9654;</button>

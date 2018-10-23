@@ -1,80 +1,53 @@
-// let pomodoroSeconds = 25 * 60;
-// let shortBreakSeconds = 5 * 60;
-// let longBreakSeconds = 15 * 60;
-
-// function displayTime(inputSeconds) {
-//   const timeLeft = getTimeFormat(inputSeconds);
-//   $('.display').text(timeLeft)
-// }
-
-// function getTimeFormat(inputSeconds) {
-//   const minutes = Math.floor(inputSeconds / 60);
-//   const seconds = Math.floor(inputSeconds % 60);
-
-//   timeLeft = [minutes, seconds].map(time => ('0' + time).slice(-2)).join(':');
-//   return timeLeft;
-// }
-
-// function setTimer(minutes) {
-//   clearInterval(timerId);
-
-//   pomodoro = minutes * 60;
-// }
-
-// let timerId;
-
-// $('#play').click(function() {
-//   clearInterval(timerId);
-  
-//   timerId = setInterval(function() {
-//     displayTime(--pomodoroSeconds);
-//   }, 1000);
-// });
-
-// $('#pause').click(function() {
-//   clearInterval(timerId);
-// });
-
-// $('.restart').click(function() {
-//   setTimer(25);
-//   displayTime(pomodoroSeconds);
-// });
-
-// $('#short-break').click(function() {
-//   setTimer(5);
-//   displayTime(shortBreakSeconds);
-// })
-
-// $('#long-break').click(function() {
-//   setTimer(15);
-//   displayTime(longBreakSeconds);
-// })
-
-// $('#settings').click(function() {
-//   $('#modal-settings').show();
-// })
-
-// $('#save').click(function() {
-//   $('#modal-settings').hide();
-// })
-
-// $('#cancel').click(function () {
-//   $('#modal-settings').hide();
-// })
-
-
-// click on top buttons, set minutes with setTimer for above accordingly
-
-// global: timerId
 let timerId;
 
 // global: HTML elements
 const display = $('.display')
 const modes = Array.from($('.mode'));
 const pomodoro = $('#pomodoro');
+const shortBreak = $('#short-break');
+const longBreak = $('#long-break');
 const play = $('#play');
 const pause = $('#pause');
 const restart = $('.restart');
+
+const settings = $('#settings');
+const modal = $('.modal');
+const save = $('#save');
+const cancel = $('#cancel');
+const pomodoroValue = $('#pomodoroValue');
+const shortBreakValue = $('#shortBreakValue');
+const longBreakValue = $('#longBreakValue');
+
+// modal setup
+settings.click(() => {
+  // get current values and populate input fields
+  pomodoroValue.val(getInitialTime(pomodoro) / 60);
+  shortBreakValue.val(getInitialTime(shortBreak) / 60);
+  longBreakValue.val(getInitialTime(longBreak) / 60);
+  
+  modal.show()
+});
+
+save.click(() => {
+  // get values from input
+  // if input empty, don't change, else save new values
+  if (pomodoroValue.val()) pomodoro.attr('data-initial-time', pomodoroValue.val() * 60);
+  if (shortBreakValue.val()) shortBreak.attr('data-initial-time', shortBreakValue.val() * 60);
+  if (longBreakValue.val()) longBreak.attr('data-initial-time', longBreakValue.val() * 60);
+ 
+  modal.hide();
+});
+
+cancel.click(() => modal.hide());
+
+// getInitialTime
+function getInitialTime(element) {
+  return element.attr('data-initial-time');
+}
+
+function getCurrentTime(element) {
+  return element.attr('data-time');
+}
 
 // setTimer
 function setTimer(element, newMinutes) {
@@ -85,7 +58,7 @@ function setTimer(element, newMinutes) {
 
 // getTimeFormat() - converts to MM:SS string
 function getTimeFormat(activeMode) {
-  const totalSeconds = activeMode.attr('data-time');
+  const totalSeconds = getCurrentTime(activeMode); 
   const minutes = Math.floor(totalSeconds / 60);
   const seconds = Math.floor(totalSeconds % 60);
 
@@ -109,9 +82,19 @@ function getActiveTimer() {
   return activeMode;
 }
 
+function setActiveTimer(mode) {
+  modes.forEach(mode => {
+    const classes = Array.from(mode.classList);
+    if (classes.includes('active')) $(mode).removeClass();
+  }) 
+
+  mode.addClass('active');
+}
+
+// Continuously countdown
 function countDown(activeMode) {
   timerId = setInterval(function() {
-    let currentTime = activeMode.attr('data-time');
+    let currentTime = getCurrentTime(activeMode); 
     activeMode.attr('data-time', --currentTime);
     const formattedTime = getTimeFormat(activeMode);
     displayTime(formattedTime);
@@ -125,6 +108,21 @@ function stopCountDown() {
   clearInterval(timerId);
 }
 
+// resets active timer's time, stop countdown, and refreshes display
+function resetTimer() {
+  // reset to initial minutes
+  const initialMinutes = $(this).attr('data-initial-time') / 60;
+  // set this to active timer
+  setActiveTimer($(this));
+  const activeTimer = getActiveTimer();
+  setTimer(activeTimer, initialMinutes);
+  // stop current countdown
+  stopCountDown();
+  // display time
+  const formattedTime = getTimeFormat(activeTimer);
+  displayTime(formattedTime);
+}
+
 play.click(function() {
   stopCountDown();
   const activeTimer = getActiveTimer();
@@ -136,25 +134,19 @@ pause.click(stopCountDown);
 restart.click(function() {
   stopCountDown();
   const activeTimer = getActiveTimer();
-  const initialMinutes = activeTimer.attr('data-initial-time') / 60;
+  const initialMinutes = getInitialTime(activeTimer) / 60;
   setTimer(activeTimer, initialMinutes);
   const formattedTime = getTimeFormat(activeTimer);
   displayTime(formattedTime);
 })
 
+// resets time, stop countdown, and updates display
+pomodoro.click(resetTimer);
+shortBreak.click(resetTimer);
+longBreak.click(resetTimer);
+
+// init display to 25 minutes
 const activeTimer =  getActiveTimer();
-setTimer(activeTimer, 0.05);
+setTimer(activeTimer, 25);
 const formattedTime = getTimeFormat(activeTimer);
 displayTime(formattedTime);
-
-
-
-
-
-// $('#play').click(function() {
-//   clearInterval(timerId);
-
-//   timerId = setInterval(function() {
-//     displayTime(--pomodoroSeconds);
-//   }, 1000);
-// });
